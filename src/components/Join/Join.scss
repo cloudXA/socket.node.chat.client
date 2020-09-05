@@ -1,0 +1,44 @@
+.joinOuterContainer {
+  
+  width: 300px;
+  margin: 0 auto;
+  border-radius: 20px;
+  border: 1px solid #33acfd;
+  margin-top: 300px;
+}
+.joinInnerContainer {
+  padding: 20px;
+  width: 200px;
+  margin: 0 auto;
+  .joinInput {
+    width: 200px;
+    height: 25px;
+    border-radius: 20px;
+    margin-bottom: 20px;
+    border: 1px solid #33acfd;
+  }
+ 
+  input[type="text"], input[type="password"], textarea, select, button { 
+    outline: none;
+  }
+  
+  a {
+    text-decoration: none;
+  }
+  button {
+    display: block;
+    margin: 0 auto;
+    width: 100px;
+    border-radius: 20px;
+    height: 25px;
+    text-decoration: none;
+    cursor: pointer;
+    background: #33acfd;
+    color: #ffffff;
+    border: none;
+  }
+}
+.heading {
+  text-align: center;
+ 
+}

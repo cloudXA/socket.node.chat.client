@@ -1,68 +1,79 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+### 👀 利用socket实现client - server 通信 
+<br > <br >
 
-## Available Scripts
+#### 1.2 [✔] socket通信基础实现--客户端
+**Tips:** 客户端，当用户进入chat页面后，useEffect被触发，借助query-string处理？name=1&room=1的url;
+借助socket.io-client客户端`socket = io(ENDPOINT); `触发服务器的的socketio的connect事件，
+借助socket.io-client客户端
+```javascript
+socket.emit('join', {name, room},({error} => {
+      alert(error)
+    }))
+```
+触发join自定义事件，同时携带{name, room}对象(es6写法)作为参数传递给服务端，()=> {} callback处理来自服务端传递而来的信息（error、success）
 
-In the project directory, you can run:
+```JavaScript
+import React, { useState, useEffect } from 'react';
+import querystring from 'query-string';
+import io from 'socket.io-client';
+import './Chat.scss'
 
-### `yarn start`
+let socket;
 
-Runs the app in the development mode.<br />
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+const Chat = ({ location }) => {
+  const [name, setName] = useState('');
+  const [room, setRoom] = useState('');
+  const ENDPOINT = 'localhost:5000';
+  
 
-The page will reload if you make edits.<br />
-You will also see any lint errors in the console.
+  // 相当于componentDidMount 和 componentDidUpdate 
+  useEffect (() => {
+    // 解析url为： ?name=1&room=1 为 {name: 1, room: 1}
+    const {name, room} = querystring.parse(location.search);
+    socket = io(ENDPOINT);  // 请求了该服务器😢
 
-### `yarn test`
+    setName(name);
+    setRoom(room);
 
-Launches the test runner in the interactive watch mode.<br />
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+    console.log(socket);
 
-### `yarn build`
+    socket.emit('join', {name, room},({error} => {
+      alert(error)
+    }))
+    
+  },[ENDPOINT, location.search]);  // 仅仅因为此二参数触发 😢
 
-Builds the app for production to the `build` folder.<br />
-It correctly bundles React in production mode and optimizes the build for the best performance.
 
-The build is minified and the filenames include the hashes.<br />
-Your app is ready to be deployed!
+  
+  return (
+    <div>
+      chat
+    </div>
+  )
+}
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+export default Chat
 
-### `yarn eject`
+```
+#### 1.2 [✔] socket通信基础实现--服务端
+**Tips:** 监听connect事件（是否http协议连接）；然后根据连接产生的socket套接字，进行监听`join`自定义事件，监听http协议断开连接事件。socket通过事件事件客户端与服务端之间的信息交互。
+```javascript
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+io.on('connect', (socket) => {
+  console.log('we have a new connection')
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+  socket.on('join', ({ name, room }, callback) => {
+    console.log(name, room);
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+    const error = true; 
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+    if(error) {
+      callback({ error: 'error' });
+    }
+  })
 
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
-
-### Analyzing the Bundle Size
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
-
-### Making a Progressive Web App
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
-
-### Advanced Configuration
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
-
-### Deployment
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
-
-### `yarn build` fails to minify
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+  socket.on('disconnect', () => {
+    console.log('user had left!!!')
+  })
+})
+```
