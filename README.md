@@ -3,7 +3,7 @@
 
 #### 1.2 [✔] socket通信基础实现--客户端
 **Tips:** 客户端，当用户进入chat页面后，useEffect被触发，借助query-string处理？name=1&room=1的url;
-借助socket.io-client客户端`socket = io(ENDPOINT); `触发服务器的的socketio的connect事件，
+借助socket.io-client客户端`socket = io(ENDPOINT); `触发服务器的的socketio的connect事件，监听到组件用户离开，则触发disconnect事件。随之关闭socket.off()
 借助socket.io-client客户端
 ```javascript
 socket.emit('join', {name, room},({error} => {
@@ -37,9 +37,15 @@ const Chat = ({ location }) => {
 
     console.log(socket);
 
-    socket.emit('join', {name, room},({error} => {
+    socket.emit('join', {name, room},({error}) => {
       alert(error)
-    }))
+    });
+
+    return () => {
+      socket.emit('disconnect');
+
+      socket.off();
+    }
     
   },[ENDPOINT, location.search]);  // 仅仅因为此二参数触发 😢
 

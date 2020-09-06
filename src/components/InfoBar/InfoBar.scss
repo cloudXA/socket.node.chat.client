@@ -1,0 +1,33 @@
+
+.infoBar {
+  margin: 0 auto;
+  width: 500px;
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid #bfbfbf;
+
+  .leftInnerContainer {
+    display:  flex;
+    flex-direction: row;
+    h3 {
+      vertical-align: middle;
+      margin: 0;
+      color: #33acfd;
+      font-size: 1rem;
+      padding-left: 10px;
+      
+    }
+    img {
+      vertical-align: middle;
+      width: 20px;
+      height: 20px;
+    }
+  }
+
+
+  .rightInnerContainer {
+    img {
+      background-size: 20px 19px;
+    }
+  }
+}
