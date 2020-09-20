@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import querystring from 'query-string';
 import InfoBar from '../InfoBar/InfoBar';
 import Input from '../Input/input';
+import Messages from '../Messages/messages';
 import io from 'socket.io-client';
 import './Chat.scss'
 
@@ -26,7 +27,8 @@ const Chat = ({ location }) => {
     setRoom(room);
 
 
-    socket.emit('join', { name, room }, ( ) => {
+    socket.emit('join', { name, room }, () => { // 进入页面触发join事件，传递参数
+    
     });
 
     return () => {
@@ -37,17 +39,24 @@ const Chat = ({ location }) => {
     
   },[ENDPOINT, location.search]);  // 仅仅因为此二参数触发 😢
 
-  // 用于处理监听 message事件 
+  // 用于处理监听 message事件,用于监听messages信息
   useEffect(() => {
     socket.on('message', (message) => {  // 监听到message事件也会触发执行
       // 等效于 将新的message注入到已有的messages数组中
       setMessages([...messages, message]);
 
-      console.log(message , 'messages前端收到的数据信息')
+      
       console.log(messages, 'innerMessages');
     })
 
   }, [messages]); // 监听messages变化才会执行
+
+  // 用于处理监听message信息，测试而已
+  // useEffect(() => {  
+  //   console.log(message , `来自用户输入的信息${message}`)
+  // }, [message])
+
+
 
   // 用于触发sendMessage事件 
   const sendMessage = (event) => {
@@ -58,14 +67,14 @@ const Chat = ({ location }) => {
     }
 
   }
-  console.log(messages, 'outer messages')
+ 
   
   return (
     <div className="outerContainer">
-      {message}
       <div className="container">
-        <InfoBar room={room} />  
-        <Input message={message} setMessage={setMessage} sendMessage={sendMessage} />
+        <InfoBar room={room} className="inforBarContainer" />  
+        <Messages messages={messages} name={name} />
+        <Input message={message} setMessage={setMessage} sendMessage={sendMessage} className="inputMessageContainer" />
       </div>
     </div>
   )

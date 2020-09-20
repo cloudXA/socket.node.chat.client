@@ -1,0 +1,46 @@
+.messageBox {
+  display: inline-block;
+  background-color: #9ce250;
+  line-height: 5px;
+  padding: 0 5px;
+  border-radius: 10px;
+}
+.triangular-arrow {
+  display: block;
+  position: relative;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 0 10px 20px 19px;
+  border-color: transparent transparent #fff transparent;
+  
+}
+.triangular-arrow::before {
+  position: absolute;
+  content: '';
+  top: 11px;
+  left: -20.5px;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 0 9.5px 19px 9.5px;
+  border-color: transparent transparent #9ce250 transparent;
+}
+.right {
+  left: 470px;
+}
+.right::before {
+  left: -8.5px;
+}
+.messageContainer {
+  line-height: 10px;
+}
+.sentText {
+  font-size: 0.9rem;
+  position: relative;
+  top: 6px;
+}
+
+.justifyEnd {
+  text-align: right;
+}
